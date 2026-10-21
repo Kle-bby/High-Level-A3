@@ -23,6 +23,8 @@ public class Game : MonoBehaviour
     private float localTimeScale = 1.0f;
     private float timeRemaining = 0.0f;
     private bool isGameOver = false;
+    private float coinTimer = 10.0f;
+    private bool isPSwitchPressed = false;
 
     public GameSettings Settings
     {
@@ -104,7 +106,19 @@ public class Game : MonoBehaviour
                 GetMario.ResetMario(marioSpawnLocation);
             }
         }
+         
+        //added stuff
+        if (isPSwitchPressed == true)
+        {
+            coinTimer -= Time.deltaTime;
+        }
 
+         if (coinTimer <= 0.0f)
+        {
+            EndPSwitch();
+            isPSwitchPressed = false;
+            coinTimer = 10;
+        }
         // Countdown the time remaining timer
         timeRemaining -= Time.deltaTime;
 
@@ -251,9 +265,29 @@ public class Game : MonoBehaviour
 
     public void PSwitchEffect()
     {
+        isPSwitchPressed = true;
         CoinPickup[] coinPickupObjects = FindObjectsByType<CoinPickup>(FindObjectsSortMode.None);
         BreakableBlock[] breakableBlocksObjects = FindObjectsByType<BreakableBlock>(FindObjectsSortMode.None);
 
+        for (int i = 0; i < coinPickupObjects.Length; i++)
+        {
+            Destroy(coinPickupObjects[i].gameObject);
+            Instantiate(breakableBlockPrefab, coinPickupObjects[i].transform.position, coinPickupObjects[i].transform.rotation);
+        }
+        for (int i = 0; i < breakableBlocksObjects.Length; i++)
+        {
+            Destroy(breakableBlocksObjects[i].gameObject);
+            Instantiate(CoinPrefab, breakableBlocksObjects[i].transform.position, breakableBlocksObjects[i].transform.rotation);
+        }
+    }
+
+
+    //FINISH
+    public void EndPSwitch()
+    {
+        
+        CoinPickup[] coinPickupObjects = FindObjectsByType<CoinPickup>(FindObjectsSortMode.None);
+        BreakableBlock[] breakableBlocksObjects = FindObjectsByType<BreakableBlock>(FindObjectsSortMode.None);
         for (int i = 0; i < coinPickupObjects.Length; i++)
         {
             Destroy(coinPickupObjects[i].gameObject);
