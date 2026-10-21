@@ -9,4 +9,7 @@ public class PickupSettings : ScriptableObject
 
     [Header("Mushroom")]
     public float MushroomSpeed = 4.0f;
+
+    [Header("PSwitch")]
+    public float PSwitchUsedDuration;
 }

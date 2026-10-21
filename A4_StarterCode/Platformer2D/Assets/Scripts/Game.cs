@@ -13,6 +13,10 @@ public class Game : MonoBehaviour
     public GameObject mushroomPickupPrefab;
     public GameObject itemBoxCoinPrefab;
     public GameObject breakableBlockBitPrefab;
+    public GameObject PSwitchPrefab;
+    public GameObject breakableBlockPrefab;
+    public GameObject CoinPrefab;
+
 
     private GameObject deadMario = null;
     private Vector2 marioSpawnLocation = Vector2.zero;
@@ -203,6 +207,7 @@ public class Game : MonoBehaviour
         }
     }
 
+
     public void SpawnItemBoxCoin(Vector2 location)
     {
         if (itemBoxCoinPrefab != null)
@@ -233,4 +238,32 @@ public class Game : MonoBehaviour
             }
         }
     }
-}
+
+    public void SpawnPSwitch(Vector2 location)
+    {
+        if (PSwitchPrefab != null)
+        {
+            GameObject PSwitchObject = Instantiate(PSwitchPrefab, new Vector3(location.x, location.y, 1.0f), Quaternion.identity);
+            PSwitch PSwitch = PSwitchObject.GetComponent<PSwitch>();
+            PSwitch.Spawn();
+        }
+    }
+
+    public void PSwitchEffect()
+    {
+        CoinPickup[] coinPickupObjects = FindObjectsByType<CoinPickup>(FindObjectsSortMode.None);
+        BreakableBlock[] breakableBlocksObjects = FindObjectsByType<BreakableBlock>(FindObjectsSortMode.None);
+
+        for (int i = 0; i < coinPickupObjects.Length; i++)
+        {
+            Destroy(coinPickupObjects[i].gameObject);
+            Instantiate(breakableBlockPrefab, coinPickupObjects[i].transform.position, coinPickupObjects[i].transform.rotation);
+        }
+        for (int i = 0; i < breakableBlocksObjects.Length; i++)
+        {
+            Destroy(breakableBlocksObjects[i].gameObject);
+            Instantiate(CoinPrefab, breakableBlocksObjects[i].transform.position, breakableBlocksObjects[i].transform.rotation);
+        }
+
+    }
+}   
